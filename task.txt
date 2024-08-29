@@ -1,0 +1,9 @@
+Task manager Project
+
+- User can add/edit/delete task 
+- Add date filter 
+- Status filter (completed, in progress, todo)
+- Priority filter (high, medium, low)
+- Search bar, for search task
+- Store Data in Local Storage
+
