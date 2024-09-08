@@ -1,18 +1,12 @@
 // Open form
-openform();
-function openform() {
-  document.getElementById("btn").addEventListener("click", () => {
-    document.getElementById("section3").style.display = "block";
-  });
-}
+document.getElementById("btn").addEventListener("click", () => {
+  document.getElementById("section3").style.display = "block";
+});
 
 // Close form
-closeform();
-function closeform() {
-  document.getElementById("closebtn").addEventListener("click", () => {
-    document.getElementById("section3").style.display = "none";
-  });
-}
+document.getElementById("closebtn").addEventListener("click", () => {
+  document.getElementById("section3").style.display = "none";
+});
 
 // Add data
 document.getElementById("adddata").addEventListener("click", () => {
@@ -56,7 +50,9 @@ function printAllTasks() {
 }
 
 // Display all tasks when the page loads
-window.onload = printAllTasks;
+window.onload = () => {
+  printAllTasks();
+};
 
 // print data
 function printData(task) {
@@ -151,18 +147,21 @@ function updateTask(taskId) {
   }
 }
 
-//get data from localstorage
-let tasks = JSON.parse(localStorage.getItem("taskdata")) || [];
+// function for delete
+function deleteTask(taskId) {
+  const tasks1 = JSON.parse(localStorage.getItem("taskdata")) || [];
+
+  const updatedTasks = tasks1.filter((task) => task.id !== taskId);
+
+  localStorage.setItem("taskdata", JSON.stringify(updatedTasks));
+
+  printAllTasks();
+}
 
 // Search filter
-// filterbysearch(tasks);
-
-// function filterbysearch(tasks) {
 document.getElementById("search").addEventListener("input", () => {
-  console.log(tasks);
-
   const query = document.getElementById("search").value.toLowerCase();
-
+  const tasks = JSON.parse(localStorage.getItem("taskdata")) || [];
   const filteredTasks = tasks.filter((task) =>
     task.taskname.toLowerCase().includes(query)
   );
@@ -171,109 +170,59 @@ document.getElementById("search").addEventListener("input", () => {
 
   filteredTasks.forEach(printData);
 });
-// }
-
-// function for delete
-function deleteTask(taskId) {
-  const tasks1 = JSON.parse(localStorage.getItem("taskdata")) || [];
-  console.log(tasks1);
-
-  const updatedTasks = tasks1.filter((task) => task.id !== taskId);
-  console.log(updatedTasks);
-
-  localStorage.setItem("taskdata", JSON.stringify(updatedTasks));
-  tasks = JSON.parse(localStorage.getItem("taskdata"));
-
-  printAllTasks();
-}
 
 // date filter
-filterbydate(tasks);
+document.getElementById("date").addEventListener("change", () => {
+  const filter_date = document.getElementById("date").value;
+  const tasks= JSON.parse(localStorage.getItem("taskdata")) || [];
+  document.getElementById("section2_2").innerHTML = "";
 
-function filterbydate(tasks) {
-  document.getElementById("date").addEventListener("change", () => {
-    const filter_date = document.getElementById("date").value;
-
-    document.getElementById("section2_2").innerHTML = "";
-
-    if (filter_date) {
-      const filteredTask_date = tasks.filter(
-        (task) => task.taskdate === filter_date
-      );
-      filteredTask_date.forEach(printData);
-    } else {
-      tasks.forEach(printData);
-    }
-  });
-}
-// function filterbydate(tasks){
-//   document.getElementById("date").addEventListener("change", (value) =>{
-//     document.getElementById("section2_2").innerHTML = "";
-//     const filteredTask = value? tasks : tasks.filter(task => task.date === value);
-//     filteredTask.forEach(printData);
-//   });
-// };
+  if (filter_date) {
+    const filteredTask_date = tasks.filter(
+      (task) => task.taskdate === filter_date
+    );
+    filteredTask_date.forEach(printData);
+  } else {
+    tasks.forEach(printData);
+  }
+});
 
 // status filter
-filterbystatus(tasks);
 
-function filterbystatus(tasks) {
-  const radiobtns = document.querySelectorAll(".status1");
+const radiobtns = document.querySelectorAll(".status1");
 
-  radiobtns.forEach((radiobtn) => {
-    radiobtn.addEventListener("change", (event) => {
-      const radiobtnvalue = event.target.value;
-      document.getElementById("section2_2").innerHTML = "";
-
-      if (radiobtnvalue === "all") {
-        tasks.forEach(printData);
-      } else {
-        const filteredTask_status = tasks.filter(
-          (task) => task.taskstatus === radiobtnvalue
-        );
-        filteredTask_status.forEach(printData);
-      }
-    });
+radiobtns.forEach((radiobtn) => {
+  radiobtn.addEventListener("change", (event) => {
+    const radiobtnvalue = event.target.value;
+    document.getElementById("section2_2").innerHTML = "";
+    const tasks = JSON.parse(localStorage.getItem("taskdata")) || [];
+    if (radiobtnvalue === "all") {
+      tasks.forEach(printData);
+    } else {
+      const filteredTask_status = tasks.filter(
+        (task) => task.taskstatus === radiobtnvalue
+      );
+      filteredTask_status.forEach(printData);
+    }
   });
-}
-// function filterbystatus(tasks){
-//   document.querySelectorAll(".status1").forEach((radiobtn) =>{
-//     radiobtn.addEventListener("change", ({target: {value}}) =>{
-//       document.getElementById("section2_2").innerHTML = "";
-//       const filteredTask = value === "all"? tasks : tasks.filter(task => task.status === value);
-//       filteredTask.forEach(printData);
-//     });
-//   });
-// };
+});
 
 // priority filter
-filterByPriority(tasks);
+const radiobtns2 = document.querySelectorAll(".priority1");
 
-function filterByPriority(tasks) {
-  const radiobtns2 = document.querySelectorAll(".priority1");
+radiobtns2.forEach((radiobtn) => {
+  radiobtn.addEventListener("change", (event) => {
+    const radiobtnvalue = event.target.value;
+    const tasks = JSON.parse(localStorage.getItem("taskdata")) || [];
+    document.getElementById("section2_2").innerHTML = "";
 
-  radiobtns2.forEach((radiobtn) => {
-    radiobtn.addEventListener("change", (event) => {
-      const radiobtnvalue = event.target.value;
-      document.getElementById("section2_2").innerHTML = "";
-
-      if (radiobtnvalue === "all") {
-        tasks.forEach(printData);
-      } else {
-        const filteredTask_priority = tasks.filter(
-          (task) => task.taskpriority === radiobtnvalue
-        );
-        filteredTask_priority.forEach(printData);
-      }
-    });
+    if (radiobtnvalue === "all") {
+      tasks.forEach(printData);
+    } else {
+      const filteredTask_priority = tasks.filter(
+        (task) => task.taskpriority === radiobtnvalue
+      );
+      filteredTask_priority.forEach(printData);
+    }
   });
-}
-// function filterByPriority(tasks){
-//   document.querySelectorAll(".priority1").forEach((radiobtn) =>{
-//     radiobtn.addEventListener("change", ({target:{value}}) =>{
-//       document.getElementById("section2_2").innerHTML = "";
-//       const filteredTask = value === "all" ? tasks : tasks.filter(task => task.priority === value);
-//       filteredTask.forEach(printData);
-//       });
-//   });
-// };
+});
